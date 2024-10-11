@@ -1,28 +1,34 @@
 import { Injectable } from '@nestjs/common';
-
 import * as bcrypt from 'bcrypt';
-
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-
 import { User } from './entities/user.entity';
-import { UserRepository } from './repository/user.repository';
-import { Register } from '../interface/register.interface';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Balance } from '../transaction/entities/balance.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    @InjectRepository(Balance)
+    private readonly balanceRepository: Repository<Balance>,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
     const hash = await this.hashPassword(createUserDto.password);
     createUserDto.password = hash;
 
-    return await this.usersRepository.save(createUserDto);
+    const newUser = await this.usersRepository.save(createUserDto);
+
+    const newBalance = new Balance();
+    newBalance.balance = 0;
+    newBalance.user = newUser;
+
+    await this.balanceRepository.save(newBalance);
+
+    return newUser;
   }
 
   async findOneByEmail(email: string): Promise<User | undefined> {

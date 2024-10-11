@@ -26,10 +26,7 @@ export class AuthService {
 
     if (!user) throw new ForbiddenException('User not found');
 
-    const passwordMatches = await this.checkPassword(
-      user, 
-      dto.password, 
-    );
+    const passwordMatches = await this.checkPassword(user, dto.password);
 
     if (!passwordMatches) throw new ForbiddenException('Password incorrect');
 

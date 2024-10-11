@@ -1,4 +1,13 @@
-import { Entity, Column, PrimaryGeneratedColumn, Index } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  Index,
+  OneToOne,
+  OneToMany,
+} from 'typeorm';
+import { Balance } from '../../transaction/entities/balance.entity';
+import { Transaction } from '../../transaction/entities/transaction.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -18,6 +27,12 @@ export class User {
   email: string;
 
   @Column()
+  cpf: string;
+
+  @Column()
+  telefone: string;
+
+  @Column()
   password: string;
 
   @Column({ default: null })
@@ -25,4 +40,10 @@ export class User {
 
   @Column({ default: true })
   isActive: boolean;
+
+  @OneToOne(() => Balance, (balance) => balance.user)
+  balance: Balance;
+
+  @OneToMany(() => Transaction, (transaction) => transaction.user)
+  transactions: Transaction[];
 }

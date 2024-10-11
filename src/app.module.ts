@@ -9,9 +9,16 @@ import { UsersModule } from './users/users.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AtGuard } from '../common/src/guards';
+import { TransactionModule } from './transaction/transaction.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), DatabaseModule, AuthModule, UsersModule],
+  imports: [
+    ConfigModule.forRoot(),
+    DatabaseModule,
+    AuthModule,
+    TransactionModule,
+    UsersModule,
+  ],
   controllers: [AppController],
   providers: [
     {
